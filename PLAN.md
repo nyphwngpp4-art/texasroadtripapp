@@ -46,18 +46,23 @@ repo then (a `promote` helper is post-v1).
 - v1 verticals: **salon** and **mobile-service** (both use the proven book-online CTA).
   81 Precision / an industrial vertical is #3, post-v1.
 - The config schema anticipates CTA divergence now: `cta.type: "booking" | "call" |
-  "quote"`. v1 implements `booking` (link-out to provider) and `call`; `quote` needs a
-  form backend on static hosting and is explicitly deferred.
+  "quote"`. v1 implements `call` (tap-to-call, the default) and `booking` (plain link-out
+  when a URL exists — no provider widget embeds); `quote` needs a form backend on static
+  hosting and is explicitly deferred.
 
-## Open inputs needed from the user (do not block scaffolding, DO block increment 1 sign-off)
-- URLs (or HTML + assets) of the four hand-built sites, dropped into `/reference/<slug>/`
-  (gitignored — real prospect names). Increment 1's visual-parity criterion is judged
-  against this material.
-- Booking provider(s) actually used (Square/Booksy/Calendly/etc.) and whether the
-  hand-built sites embed a widget or link out. v1 assumes link-out; an embed requires a
-  per-provider snippet component.
-- One concrete example of how the AAA grooming site differed from the salons (drives the
-  mobile-service preset's variant picks).
+## Reference-material status (resolved 2026-07-02)
+The hand-built originals are **not available** — the user is remote and cannot retrieve
+them. Known facts: all four were one-off Claude Opus builds in separate projects; no
+booking-provider integration existed (CTA was call/contact, not a widget); the grooming
+site differed from the salons only minimally. Consequences:
+- Increment 1 still regenerates Logic Nails (config drafted from public business facts +
+  the user's memory), but the fidelity check is amended — see ACCEPTANCE A3: an objective
+  quality rubric Fable verifies, plus the user's from-memory verdict on their phone.
+- `/reference/` stays in the file map; if original URLs or files ever surface, the true
+  side-by-side is run then and logged as an addendum.
+- The mobile-service preset should diverge from salon only where the vertical demands it
+  (service-area emphasis over street address, van/before-after imagery treatment) — the
+  corpus says the differences were small, so don't invent big ones.
 
 ## Architecture
 
@@ -121,8 +126,8 @@ stub config. No visual output claims.
 **Increment 1 — regenerate Logic Nails from a config. This is the proof the abstraction
 works; nothing else proceeds until it passes review.** Salon preset + only the components
 that site actually needs + `configs/logic-nails.json` + `assets/site.css`. Done when the
-side-by-side comparison against the hand-built original passes (ACCEPTANCE A-block).
-Requires the reference material from the user.
+A-block passes: quality rubric verified by Fable plus the user's from-memory verdict
+against the Opus-built original (ACCEPTANCE A3).
 
 **Increment 2 — prove the per-client layer.** `configs/example.json` (fictional salon,
 different palette/fonts/copy/photos) builds with zero source-code changes and produces a

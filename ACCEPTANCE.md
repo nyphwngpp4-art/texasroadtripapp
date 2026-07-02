@@ -12,16 +12,22 @@ Fable has logged a verdict in the Review log. "Screenshots" always means two vie
 - **A2.** Generated `index.html` contains no runtime framework or CDN script: grep for
   `cdn.tailwindcss.com`, `react`, `vue`, `unpkg`, `jsdelivr` finds nothing. Google Fonts
   `<link>` is the only permitted external resource.
-- **A3. Side-by-side visual comparison.** Screenshots of the generated site and the
-  hand-built original from `/reference/logic-nails/`, paired section by section, attached
-  to the review. Pass requires all of: (a) same sections in the same order; (b) hero,
-  palette, and typography read as the same brand; (c) no section of the generated site is
-  identifiably worse than the original at arm's length. Verdict + screenshot paths logged
-  below.
+- **A3. Visual quality verdict** (amended 2026-07-02: the hand-built originals are
+  unavailable, so the side-by-side is replaced by a two-part check). Part 1, verified by
+  Fable from screenshots: (a) typography uses the preset's font pairing with a real
+  hierarchy — no default/system fonts, no two adjacent sections with identical visual
+  weight; (b) palette is cohesive and body text meets WCAG AA contrast; (c) spacing is
+  consistent across sections (one scale, no ad-hoc gaps); (d) imagery is art-directed per
+  the preset (consistent aspect ratios/treatment), with no placeholder-looking blocks.
+  Part 2, verified by the user: they review the generated site on their phone against
+  their memory of the Opus-built originals and log a would-pass-as-one-of-them verdict.
+  Both parts + screenshot paths logged below. *Addendum clause: if any original's URL or
+  files later surface, the true section-by-section side-by-side is run and logged then.*
 - **A4.** Total transfer size of the generated page excluding images is under 150 KB, and
   Lighthouse mobile performance score is ≥ 90.
 - **A5.** At 360px width: no horizontal scroll, nav menu opens and closes, primary CTA is
-  tappable and resolves to the configured booking URL.
+  tappable and resolves to the configured target (`tel:` link for `call`, the configured
+  URL for `booking`).
 - **A6.** `index.html` includes title, meta description, OG tags, a favicon, and valid
   schema.org `NailSalon` JSON-LD (passes Google's Rich Results test or `schema.org`
   validator without errors).
@@ -38,15 +44,16 @@ Fable has logged a verdict in the Review log. "Screenshots" always means two vie
 
 ## C — Increment 3: per-vertical layer
 
-- **C1.** AAA Grooming regenerated from `configs/` passes the same side-by-side test as
-  A3 against `/reference/aaa-grooming/`.
+- **C1.** AAA Grooming regenerated from `configs/` passes the same two-part quality
+  verdict as A3 (Fable rubric + user from-memory review).
 - **C2. Additive-only proof:** the increment-3 diff adds files (`templates/
   mobile-service.js`, new variants, configs) but modifies no existing component's output:
   rebuilding `logic-nails` before and after the increment yields byte-identical
   `index.html`.
-- **C3.** `cta.type` accepts `booking`, `call`, `quote`; `booking` and `call` render
-  working CTAs, `quote` fails the build with a clear "deferred to v2" error (schema
-  anticipates vertical #3, implementation doesn't pretend).
+- **C3.** `cta.type` accepts `booking`, `call`, `quote`; `call` (default, `tel:` link)
+  and `booking` (plain link-out) render working CTAs, `quote` fails the build with a
+  clear "deferred to v2" error (schema anticipates vertical #3, implementation doesn't
+  pretend).
 
 ## D — Increment 4: operability (definition of done)
 
