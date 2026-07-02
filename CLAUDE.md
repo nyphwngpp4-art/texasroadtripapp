@@ -1,31 +1,43 @@
-# texasroadtripapp — Trip Tracker
+# agavi-site-scaffold — Config-Driven Spec-Site Generator
 
 ## What this is
-A family road-trip tracker for a month-long Texas trip (Chandler, AZ → Lake Brownwood, TX and back, plus side trips). Users: two parents, two daughters. Primary device: phones in the car.
+An internal Agavi AI tool that turns a JSON config (business name, vertical, palette, copy blocks, contact info) into a complete, Cloudflare Pages-ready spec site. Purpose: compress every future spec-site from a day of hand-building to under an hour of config + review. This replaces the hand-built pattern used for Logic Nails, AAA Mobile Dog Grooming, and 81 Precision Machine — those three sites are the reference corpus for what the templates must be able to produce.
+
+## Why this exists (design pressure)
+Spec sites are Agavi's outreach wedge: build a site a prospect didn't ask for, show it, open the conversation. The economics only work if marginal cost per site is near zero. Every abstraction decision should be judged against: "does this make site #10 faster without making site #4 uglier?"
 
 ## Product intent (v1)
-- Route milestones and "are we there yet" progress bar tied to waypoints
-- Stop log: where we stopped, when, notes, star rating per family member
-- Sightings/moments log (photo-optional, text-first)
-- Fast to use one-handed in a moving car
+- One command / one action: config JSON in → deployable static site out
+- 2 vertical templates in v1 (service-trade and one other, chosen from the reference corpus), architected so a third is additive, not a refactor
+- Shared component library: hero, services grid, about, testimonials/social proof, CTA/contact, footer — composable per vertical
+- Config schema documented well enough that a config can be drafted by an LLM from a prospect research brief
+- Output must be indistinguishable in quality from the hand-built sites — this is a sales asset, not a demo
+
+## OPEN ARCHITECTURE DECISIONS — resolve before writing PLAN.md
+1. **Build-time vs runtime:** static generator script (emits plain HTML/CSS per site) vs single runtime app reading config. Default lean: build-time — output stays dependency-free, hostable anywhere, and matches the current hand-built deliverable.
+2. **Generator stack:** Node script with a templating approach (which one), or plain string-template JS. Keep the toolchain minimal — this runs on a Mac mini, not CI.
+3. **Template abstraction boundary:** what is per-vertical (section order, imagery style, copy tone) vs per-client (name, palette, copy, photos) vs fixed (grid, typography scale, component markup). Reverse-engineer this from the three reference sites before deciding.
+4. **Repo-per-site vs monorepo output:** does the generator emit into a /dist per client for manual deploy, or scaffold a new repo per client?
+
+Fable must resolve all four with the user and record decisions at the top of PLAN.md.
 
 ## Stack and constraints
-- Vanilla HTML/CSS/JS. Tailwind via CDN. No build step, no framework.
-- Deploy target: Cloudflare Pages (static). Keep everything servable as static files.
-- Persistence: localStorage for v1. JSON export/import so data survives device swaps.
-- Mobile-first. Large touch targets. Must work offline (no runtime API dependencies).
+- Generated sites: static HTML/CSS/JS only, no runtime framework, no build step required to serve. Tailwind decision belongs to Fable's planning pass (CDN vs compiled vs vanilla CSS) — judged on output quality and page weight.
+- Generator tooling: Node.js acceptable; keep dependencies minimal and pinned.
+- Deploy target for generated sites: Cloudflare Pages.
+- Brand baseline: Agavi's own site (agaviai.com) uses an editorial cream/Newsreader design system — generated spec sites are client-branded, not Agavi-branded, but should carry the same level of typographic care.
+- Mobile-first; spec sites get viewed on a prospect's phone during a call.
 
 ## Repo conventions
-- `index.html` is the entry point. Split JS into modules under `/js` (e.g. `state.js`, `ui.js`, `data.js`) — no single 2,000-line file.
-- Trip data (waypoints, milestones) lives in `/data` as JSON, never hardcoded in logic.
-- Heavy comments on state shape and any non-obvious logic. Assume a competent human will hand-edit data files.
-- Commit style: short imperative subject, body explains why if non-obvious.
+- Suggested layout (Fable may revise in PLAN.md): /templates (per-vertical), /components (shared), /configs (one JSON per client, gitignore real prospects if needed), /generator (build script), /docs (config schema reference), /dist (output, gitignored).
+- Heavy comments in the generator and one fully-annotated example config committed as /configs/example.json.
+- Commit style: short imperative subject; body explains why if non-obvious.
 
 ## Workflow (multi-model)
-- Claude Fable (Mythos-class model) writes PLAN.md and ACCEPTANCE.md before any code is written, interrogating the user on requirements first.
-- Claude Sonnet implements against PLAN.md in small increments, checking off acceptance criteria as it goes.
-- Fable reviews diffs against ACCEPTANCE.md before anything is considered done. Review verdicts go in a `## Review log` section at the bottom of ACCEPTANCE.md.
-- Neither model expands scope beyond PLAN.md without asking the user.
+- Claude Fable (Mythos-class model) resolves the four open decisions, then writes PLAN.md and ACCEPTANCE.md before any code. The template abstraction (decision 3) is the highest-stakes call in this repo — getting it wrong means a rebuild when vertical #3 arrives.
+- Claude Sonnet implements against PLAN.md incrementally.
+- Fable reviews diffs against ACCEPTANCE.md; verdicts appended to ## Review log at the bottom of ACCEPTANCE.md.
+- No scope expansion beyond PLAN.md without asking the user.
 
 ## Definition of done (v1)
-Every item in ACCEPTANCE.md passes on a real phone browser, offline, with data surviving a page reload.
+A new config JSON for a fictional business in a supported vertical produces a deploy-ready site in under 10 minutes of human effort, and that site would pass as hand-built next to Logic Nails / AAA / 81 Precision. All ACCEPTANCE.md items pass.
