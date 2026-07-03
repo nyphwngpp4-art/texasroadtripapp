@@ -49,8 +49,8 @@ updated:
 
 | Job | Cadence | Reads | Emits |
 |---|---|---|---|
-| Orphan Report | Sun night | assets where `linked_demand` empty or `last_external_event` > 7d | Telegram report; 21d → forced pitch/package/kill trichotomy |
-| Starved-demand check | Sun night | demand where warmth ∈ {hot,warm} and `next_action_date` passed | Telegram, top of week's priorities |
+| Orphan Report | Sun night | assets where `linked_demand` empty or `last_external_event` > 7d | Monday email section; 21d → forced pitch/package/kill trichotomy |
+| Starved-demand check | Sun night | demand where warmth ∈ {hot,warm} and `next_action_date` passed | Monday email, top of week's priorities |
 | The Monday number | Mon morning | max(`last_external_event`) across all assets | one line: "N days since an external human saw something new" |
 | Heartbeat | daily | repos of assets in `state: build` with no commits 5d | Herald nudge |
 | Pilot watch | daily | assets in `state: pilot` past `pilot_end` + 7d silence | Herald drafts the polite kill/convert message |

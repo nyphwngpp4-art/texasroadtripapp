@@ -30,5 +30,5 @@ _Written for a stranger. Sonnet drafts from the repo; a person who has never see
 ## 4. Telemetry plan
 - **Ping:** n8n webhook URL: ____ · fires on: <!-- meaningful use event, e.g. form submit, agent run -->
 - **Success number (must match DEMAND.md):**
-- **Nightly digest:** included in Ollama telemetry summary? yes/no
+- **Weekly digest:** included in the Monday email telemetry summary? yes/no
 - **How the end-of-pilot call uses this number:**

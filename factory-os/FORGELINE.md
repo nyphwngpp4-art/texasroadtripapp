@@ -30,7 +30,7 @@ Evidence: one live client site (81 Precision), **three finished sites never pitc
 1. **Fast idea→prototype cycle.** Genuinely rare. Do not slow it down; redirect it.
 2. **The PLAN/ACCEPTANCE multi-model pattern.** Interrogate-then-plan (Fable), implement-in-increments (Sonnet), review-against-criteria (Fable) is a real gate that works. v1's mistake is deploying it only downstream, on code.
 3. **Proven production capability.** 81 Precision proves the full path exists.
-4. **Real infrastructure.** n8n, Ollama, Telegram, Obsidian, Google Workspace — a factory-grade toolchain currently used only *inside products*, never *on the factory itself*.
+4. **Real infrastructure.** n8n, Claude (Fable + Sonnet), Gmail/Calendar, Obsidian — a factory-grade toolchain currently used only *inside products*, never *on the factory itself*.
 
 ### 1.3 Root-cause diagnosis (challenging the brain dump)
 
@@ -78,7 +78,7 @@ v1 accounting treats them as embarrassing dead weight. They are finished goods s
 v1 is a **push factory**: ideas are pushed into builds, builds pile up as inventory.
 FORGELINE is a **pull factory**: a build slot can only be opened by a **Demand Ticket** — a token minted exclusively by an external event (a scheduled conversation, a written expression of interest, money) or, for internal tools, a measured baseline of the factory metric the tool will improve. No ticket, no build. The gate is structural, not motivational.
 
-Everything else in the design serves that inversion, plus one meta-principle: **the factory's own automation (n8n, Ollama, Telegram) is aimed at the operator's weakest muscle — outreach, follow-up, and forced decisions — not the strongest one.**
+Everything else in the design serves that inversion, plus one meta-principle: **the factory's own automation (n8n, scheduled Claude sessions, Gmail) is aimed at the operator's weakest muscle — outreach, follow-up, and forced decisions — not the strongest one.**
 
 ### 2.1 Lifecycle states
 
@@ -99,9 +99,9 @@ Every transition right of SPARK requires an **external event**, never internal c
 
 #### Station 0 — THE LEDGERS (memory substrate; always on)
 
-Two Obsidian folders with strict YAML frontmatter (schema in `templates/LEDGER-SCHEMA.md`), sync-readable by n8n:
+Two folders of markdown notes with strict YAML frontmatter (schema in `templates/LEDGER-SCHEMA.md`), living **in the factory-os git repo** (`ledger/demand/`, `ledger/assets/`) so scheduled Claude sessions and n8n can both read and write them; mirror into Obsidian if you want the graph view:
 
-- **Demand Ledger:** every prospect, conversation, signal, expression of interest. Entries are minted from Telegram capture or calendar events.
+- **Demand Ledger:** every prospect, conversation, signal, expression of interest. Entries are minted from SPARK capture or calendar events.
 - **Asset Ledger:** every build, its lifecycle state, its linked demand entries, its harvested components.
 
 **The reconciliation invariant:** every Asset must link ≥1 Demand entry; every warm Demand entry should link an Asset or a next action. A weekly n8n job (Sunday night) diffs the two ledgers and produces the **Orphan Report**:
@@ -110,12 +110,12 @@ Two Obsidian folders with strict YAML frontmatter (schema in `templates/LEDGER-S
 
 This is the factory's balance sheet. It is what makes the three-unpitched-sites failure mode *impossible to not see*.
 
-- **Tools:** n8n (cron + file parsing), Ollama (digest drafting — cheap, nightly), Obsidian (storage), Telegram (delivery).
+- **Tools:** weekly scheduled Claude session or n8n cron (ledger diff), Sonnet (digest drafting), git repo (storage), **the Monday email** (delivery — one email to yourself, Sunday night, containing the Orphan Report and the Monday number).
 
 #### Station 1 — INTAKE (Gatekeeper agent)
 
-- **Input:** raw idea, captured in ≤30 seconds via Telegram bot ("/spark ...").
-- **Process:** an Ollama-powered Gatekeeper (7–14B instruct model; this is triage, not judgment) asks exactly three questions back through Telegram:
+- **Input:** raw idea, captured in ≤30 seconds by emailing yourself with subject `SPARK: <idea>` (auto-labeled in Gmail), or dropping a note in `ledger/inbox/`.
+- **Process:** a Sonnet-powered Gatekeeper (scheduled Claude session or n8n workflow; this is triage, not judgment) replies to the SPARK email with exactly three questions:
   1. Who is the named human who would use or buy this? (A segment — "plumbers" — is not a name.)
   2. What would they do differently in the week after getting it?
   3. CLIENT or LEVER? If LEVER: which factory metric, and what's today's baseline?
@@ -131,7 +131,7 @@ The single biggest structural change to daily work. For CLIENT sparks that pass 
 - optionally a fake-door demo (clickable shell, canned data).
 
 - **The 72-hour rule:** a completed Proof must be **in front of a named external human within 72 hours** of completion, or it auto-orphans and the Herald starts escalating. This converts "momentum drop after prototype" from a silent failure into a loud one.
-- **Tools:** Fable drafts the one-pager and demo script (high-stakes persuasion writing); Sonnet/Ollama builds the fake door; the existing site-scaffold pattern (this repo) becomes the fake-door template.
+- **Tools:** Fable drafts the one-pager and demo script (high-stakes persuasion writing); Sonnet builds the fake door; the existing site-scaffold pattern (this repo) becomes the fake-door template.
 - **Redirects the build dopamine:** you still get to build something in hours — but the thing you build is inherently pitch-shaped and expires if unshown.
 
 #### Station 3 — PULL GATE (mints Demand Tickets)
@@ -169,7 +169,7 @@ The single biggest structural change to daily work. For CLIENT sparks that pass 
 
 #### Station 6 — DEPLOY & INSTRUMENT
 
-- Every deployed skill/agent/site embeds a **lightweight telemetry ping** — an n8n webhook hit on meaningful use (form submit, agent run, workflow completion). No dashboards required in v1: a nightly Ollama job summarizes pings into one Telegram line per active pilot ("81P site: 4 form submits this week").
+- Every deployed skill/agent/site embeds a **lightweight telemetry ping** — an n8n webhook hit on meaningful use (form submit, agent run, workflow completion). No dashboards required in v1: a scheduled Sonnet job summarizes pings into one line per active pilot in the Monday email ("81P site: 4 form submits this week").
 - **Pilot protocol:** 14-day window; the **end-of-pilot call is booked on day 0** (the calendar again as commitment device); the success number from the Telemetry plan is the agenda.
 - **Decision rule at pilot end:** convert to paid production, extend once (max once), or kill with a Kill Note. Silence from the client for 7 days past pilot end = kill, politely.
 
@@ -190,25 +190,24 @@ v1's SPOF (W3) is that "salesperson" and "operations manager" are unstaffed role
 
 | Agent | Role | Model / runtime | Trigger |
 |---|---|---|---|
-| **Gatekeeper** | Intake triage, 3-question interrogation, PARK routing | Ollama 7–14B via Telegram bot + n8n | `/spark` message |
+| **Gatekeeper** | Intake triage, 3-question interrogation, PARK routing | Sonnet — scheduled Claude session or n8n | new `SPARK:` email / inbox note |
 | **Producer** | DEMAND.md interrogation, PLAN.md, ACCEPTANCE.md | Fable (interactive session) | Demand Ticket minted |
 | **Builder** | Implementation in increments | Sonnet | PLAN.md exists |
 | **Examiner** | Diff review vs ACCEPTANCE.md, review log | Fable | PR / increment complete |
 | **Packager** | Pilot Kit assembly, checklist enforcement | Sonnet drafts, Fable polishes persuasion pieces | Build passes review |
-| **Herald** | *The anti-stall daemon.* Watches ledgers + repo heartbeats; on stall, **drafts the actual pitch/follow-up message** and sends it to Telegram with one-tap "send / edit / snooze / kill" | n8n cron + Ollama drafting, Fable for high-stakes drafts | 72-hour rule, orphan rules, pilot-end silence |
+| **Herald** | *The anti-stall daemon.* Watches ledgers + repo heartbeats; on stall, **writes the actual pitch/follow-up as a ready-to-send Gmail draft** in your Drafts folder — approval is pressing Send | n8n cron / scheduled Claude session + Sonnet drafting, Fable for high-stakes drafts | 72-hour rule, orphan rules, pilot-end silence |
 | **Auditor** | Monthly retro, gate-evasion detection, OS change proposals | Fable | Monthly cron |
 
-The Herald is the keystone. Note the asymmetry with v1: the automation does the *emotionally expensive* work (writing the outreach message, remembering the follow-up) and leaves the human a binary tap. Activation energy for pitching drops from "compose a pitch from scratch while feeling awkward" to "approve a drafted message."
+The Herald is the keystone. Note the asymmetry with v1: the automation does the *emotionally expensive* work (writing the outreach message, remembering the follow-up) and leaves the human a binary act. Activation energy for pitching drops from "compose a pitch from scratch while feeling awkward" to "open Drafts, press Send."
 
 ### 2.5 Tool/model assignment doctrine
 
-- **Ollama (local, free, always-on):** everything high-frequency and low-stakes — intake triage, nightly telemetry digests, ledger diffs, first-draft nudges. If a task runs on a cron, it should run local.
+- **Claude Sonnet (API / scheduled sessions):** everything high-frequency and low-stakes on a schedule — intake triage, telemetry digests, ledger diffs, first-draft nudges — plus implementation volume and mechanical drafting (runbooks, telemetry wiring). At factory volumes (a few dozen calls/week) the cost is trivial; do not re-add local-model complexity to save pennies.
 - **Claude Fable/Mythos:** everything where judgment or persuasion quality compounds — requirement interrogation, plans, acceptance criteria, diff review, client-facing pitch/one-pager drafts, monthly retro. Low frequency, high stakes.
-- **Claude Sonnet:** implementation volume and mechanical drafting (runbooks, telemetry wiring).
-- **n8n:** the factory's nervous system — every cron, webhook, heartbeat, Telegram wire, and ledger sync. Rule of thumb: *any process step described with "remember to" must become an n8n trigger.*
-- **Telegram:** the factory's control surface — capture in, nudges out, one-tap approvals. Everything operable from a phone.
-- **Obsidian:** system of record (ledgers, registry, kill notes) with machine-parseable frontmatter.
-- **Google Calendar:** the demand oracle. A conversation exists iff it is on the calendar. n8n reads it to verify Demand Tickets and pilot-end calls.
+- **n8n + scheduled Claude sessions:** the factory's nervous system — every cron, webhook, heartbeat, and ledger job. Rule of thumb: *any process step described with "remember to" must become a trigger.* Prefer a scheduled Claude session when the job reads/writes the ledger repo or drafts prose; prefer n8n when it's webhooks and glue.
+- **Gmail:** the factory's control surface. Sparks go in as `SPARK:` self-emails; the Monday email brings the Orphan Report, the Monday number, and telemetry digests out; and the Herald's outreach lands as **pre-written drafts in the Drafts folder** — approval is pressing Send.
+- **Git repo (factory-os):** system of record — ledgers, registry, kill notes, the OS itself — with machine-parseable frontmatter. Mirror to Obsidian for browsing if desired.
+- **Google Calendar:** the demand oracle. A conversation exists iff it is on the calendar (a Calendly link in every outreach email is how prospects mint Demand Tickets themselves). Automation reads it to verify tickets and pilot-end calls.
 
 ### 2.6 The Conviction Slot (pressure valve)
 
@@ -226,13 +225,13 @@ Ordered so that **revenue motion precedes process construction**, every step is 
 3. Run the trichotomy on each of the 3 sites *this week*: pitch, package-as-content, or Kill Note. **Success test for the entire redesign: at least one of the three sites is in front of a named human within 7 days.** If the OS can't move existing finished inventory, it won't move future inventory.
 
 ### Phase 1 (Weeks 1–2) — Herald v0. *Build the weakest-muscle automation first.*
-- n8n: weekly ledger-diff cron → Orphan Report → Telegram.
-- Ollama/Fable: pitch-draft-on-stall with one-tap approve.
+- Weekly scheduled Claude session (or n8n cron): ledger diff → Orphan Report → the Monday email.
+- Sonnet/Fable: pitch-draft-on-stall, delivered as ready-to-send Gmail drafts.
 - **Validation:** the Herald successfully causes ≥1 outreach message to be sent that would not otherwise have been sent. That single event proves the core thesis.
 - **Rollback:** it's a notifier — disable the cron.
 
 ### Phase 2 (Weeks 2–3) — Gatekeeper + the Demand Ticket rule goes live.
-- Telegram `/spark` bot → Ollama triage → Demand Ledger entry.
+- `SPARK:` self-email (or `ledger/inbox/` note) → Sonnet triage → Demand Ledger entry.
 - From here on: **no new repo without a DEMAND.md** (or explicit Conviction Slot label).
 - **Validation:** 2 weeks of sparks captured; ≥50% parked at gate without resentment.
 - **Rollback risk & mitigation:** if the gate kills all momentum and building stops entirely, that signals the gate is too heavy — the documented fallback is widening the Conviction Slot to 2/month, *not* removing the gate.
@@ -263,7 +262,7 @@ Ordered so that **revenue motion precedes process construction**, every step is 
 | Orphaned assets count | trending → 0 | Orphan Report |
 | Gate kill/park rate | ≥50% of sparks | Gatekeeper log |
 | Proof → Demand Ticket conversion | measure, then baseline | Ledger |
-| Herald taps: drafted → sent rate | ≥60% sent or edited-and-sent | Telegram bot log |
+| Herald drafts: drafted → sent rate | ≥60% sent or edited-and-sent | Gmail Drafts vs Sent |
 | WIP compliance (builds open ≤2) | 100% | Ledger |
 
 ### Lagging indicators (monthly)
@@ -277,7 +276,7 @@ Ordered so that **revenue motion precedes process construction**, every step is 
 | OS changelog entries + retro completion | Is the outer loop alive? |
 
 ### The one-number weekly check
-If only one thing is glanced at: **days since the last external human saw something new from the factory.** The Herald posts this number to Telegram every Monday. It should never exceed 7.
+If only one thing is glanced at: **days since the last external human saw something new from the factory.** This number tops the Monday email. It should never exceed 7.
 
 ---
 
@@ -295,7 +294,7 @@ If only one thing is glanced at: **days since the last external human saw someth
 
 1. **Client Delivery & Pilot Operations OS (next, and urgent).** FORGELINE is designed to start producing pilots within weeks — and there is currently nothing to catch them: no onboarding sequence, support channel norms, invoicing rhythm, or production-hosting standard. The Pilot Kit's runbook is the seam where the two systems will join. Redesign this second, before pilot #2 exists, or FORGELINE's output becomes the next cliff.
 2. **Proof-of-Work Content Pipeline (after that).** FORGELINE already manufactures its raw material as by-products: Kill Notes, case studies, Conviction Slot public ships, Proof demos. A thin pipeline (Fable rewrite → post → inbound routed to the Demand Ledger) turns the factory's exhaust into its fuel — inbound demand mints Demand Tickets, which is the single most compounding loop available.
-3. *(Later)* **Local Lab Orchestration OS** (Ollama fleet, model routing, eval harness). Deliberately third: it improves build speed, which is already the strongest link. Optimizing it first would be v1 behavior — polishing the fun part.
+3. *(Later)* **Build Lab Orchestration OS** (model routing, eval harness, scheduled-session fleet). Deliberately third: it improves build speed, which is already the strongest link. Optimizing it first would be v1 behavior — polishing the fun part.
 
 ---
 
