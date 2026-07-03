@@ -1,0 +1,58 @@
+{
+  "slug": "logic-nails",
+  "preset": "warm-modern",
+  "meta": {
+    "title": "Logic Nails | Nail Salon in Chandler, AZ",
+    "description": "Logic Nails is a full-service nail salon on S Gilbert Rd in Chandler, AZ, offering manicures, pedicures, acrylics, waxing, and lash extensions. Call to book."
+  },
+  "business": {
+    "name": "Logic Nails",
+    "phone": "+14806874188",
+    "phoneDisplay": "(480) 687-4188",
+    "address": {
+      "line1": "5025 S Gilbert Rd, Suite 5",
+      "city": "Chandler",
+      "state": "AZ",
+      "zip": "85249"
+    }
+  },
+  "hero": {
+    "headline": "Chandler's neighborhood nail salon",
+    "subhead": "Manicures, pedicures, acrylics, waxing, and lash extensions in a clean, relaxing space on S Gilbert Rd. Walk-ins welcome, or call ahead to skip the wait.",
+    "ctaLabel": "Book by phone"
+  },
+  "services": [
+    {
+      "name": "Manicures",
+      "description": "Classic, gel, and spa manicures with shaping, cuticle care, and polish of your choice."
+    },
+    {
+      "name": "Pedicures",
+      "description": "Soaking, exfoliation, and massage finished with a polish or gel that holds up in sandals season."
+    },
+    {
+      "name": "Acrylic Nails",
+      "description": "Full sets and fills, from natural shapes to custom lengths and nail art."
+    },
+    {
+      "name": "Waxing",
+      "description": "Quick, precise waxing for brows, lip, and other areas."
+    },
+    {
+      "name": "Lash Extensions",
+      "description": "Classic and volume lash sets for lasting length and lift without daily mascara."
+    }
+  ],
+  "hours": [
+    { "days": "Monday - Friday", "time": "9:30 AM - 7:00 PM" },
+    { "days": "Saturday", "time": "9:30 AM - 6:00 PM" },
+    { "days": "Sunday", "time": "11:00 AM - 5:00 PM" }
+  ],
+  "cta": {
+    "headline": "Ready for your next appointment?",
+    "label": "Call Logic Nails"
+  },
+  "footer": {
+    "text": "Logic Nails - your neighborhood nail salon in Chandler, Arizona."
+  }
+}
