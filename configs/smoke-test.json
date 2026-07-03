@@ -1,0 +1,37 @@
+{
+  "slug": "smoke-test",
+  "preset": "warm-modern",
+  "meta": {
+    "title": "Smoke Test Site",
+    "description": "Minimal config exercising every required field, used to prove the build pipeline end-to-end."
+  },
+  "business": {
+    "name": "Smoke Test Co.",
+    "phone": "+15555550100",
+    "phoneDisplay": "(555) 555-0100",
+    "address": {
+      "line1": "1 Test Way",
+      "city": "Testville",
+      "state": "TS",
+      "zip": "00000"
+    }
+  },
+  "hero": {
+    "headline": "This is a smoke test",
+    "subhead": "It only exists to prove the generator pipeline works end-to-end.",
+    "ctaLabel": "Call Us"
+  },
+  "services": [
+    { "name": "Test Service", "description": "A placeholder service for validation purposes." }
+  ],
+  "hours": [
+    { "days": "Mon-Fri", "time": "9:00 AM - 5:00 PM" }
+  ],
+  "cta": {
+    "headline": "Ready to test?",
+    "label": "Call Now"
+  },
+  "footer": {
+    "text": "Smoke Test Co. - not a real business."
+  }
+}

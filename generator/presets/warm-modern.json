@@ -1,0 +1,23 @@
+{
+  "id": "warm-modern",
+  "colors": {
+    "primary": "#b5654d",
+    "primaryDark": "#8f4c39",
+    "accent": "#c9a15a",
+    "background": "#fffaf5",
+    "surface": "#f3e7db",
+    "text": "#2c2420",
+    "textMuted": "#6b5d54"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Playfair Display",
+      "googleFontParam": "Playfair+Display:wght@600;700"
+    },
+    "body": {
+      "family": "Inter",
+      "googleFontParam": "Inter:wght@400;500;600"
+    }
+  },
+  "radius": "10px"
+}
