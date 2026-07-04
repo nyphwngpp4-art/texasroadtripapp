@@ -107,6 +107,10 @@ Prove the pipeline end-to-end with the smallest possible surface:
   plain recursive copy.
 - A CLI flag surface beyond a single positional config-path argument.
 - Analytics, forms, or any client-side JS in generated output.
+- Booking/scheduling integration for Logic Nails: confirmed with the user
+  that no live booking system exists today. This site is a call-first
+  teaser; wiring up a real booking widget would be separate, paid follow-on
+  work for the business, not part of v1.
 - A second preset (only `warm-modern` ships in v1).
 </content>
 </invoke>
